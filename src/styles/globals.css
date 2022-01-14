@@ -1,0 +1,47 @@
+@import 'tailwindcss/base.css';
+@import 'tailwindcss/components.css';
+@import 'tailwindcss/utilities.css';
+
+@import '@radix-ui/colors/blackA.css';
+@import '@radix-ui/colors/whiteA.css';
+
+@import '@radix-ui/colors/mauveDark.css';
+@import '@radix-ui/colors/mauveDarkA.css';
+
+@import '@radix-ui/colors/blueDark.css';
+@import '@radix-ui/colors/greenDark.css';
+@import '@radix-ui/colors/purpleDark.css';
+@import '@radix-ui/colors/redDark.css';
+@import '@radix-ui/colors/yellowDark.css';
+
+html {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+  font-feature-settings: 'case' 1, 'rlig' 1, 'calt' 0;
+  height: 100%;
+  text-rendering: optimizeLegibility;
+  touch-action: manipulation;
+}
+
+html,
+body {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  color: var(--mauve12);
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  min-height: 100%;
+  position: relative;
+  background-color: var(--mauve1);
+}
+
+button {
+  cursor: default;
+}
+
+a {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
