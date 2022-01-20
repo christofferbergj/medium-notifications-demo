@@ -8,6 +8,13 @@ import { dismissNotification } from '@features/notifications/notification.slice'
 import { useAppDispatch } from '@redux/hooks'
 
 export type NotificationTypes = 'success' | 'error' | 'warning' | 'info'
+export type NotificationPositions =
+  | 'top'
+  | 'top-right'
+  | 'top-left'
+  | 'bottom'
+  | 'bottom-right'
+  | 'bottom-left'
 
 export type Notification = {
   /**

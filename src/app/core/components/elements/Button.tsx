@@ -1,7 +1,7 @@
 import { ComponentPropsWithoutRef } from 'react'
 import clsx from 'clsx'
 
-type ButtonTypes = 'default' | 'danger' | 'warning' | 'success'
+export type ButtonTypes = 'default' | 'danger' | 'warning' | 'success' | 'ghost'
 
 type Props = ComponentPropsWithoutRef<'button'> & {
   variant?: ButtonTypes
@@ -16,6 +16,7 @@ const buttonStyleVariants: Record<ButtonTypes, string> = {
     'bg-purple-3 border-purple-7 hover:bg-purple-4 active:bg-purple-5 hover:border-purple-8',
   warning:
     'bg-yellow-3 border-yellow-7 hover:bg-yellow-4 active:bg-yellow-5 hover:border-yellow-8',
+  ghost: 'hover:bg-gray-4 border-gray-7 hover:border-gray-8',
 }
 
 export const Button = ({ variant = 'default', ...rest }: Props) => {
