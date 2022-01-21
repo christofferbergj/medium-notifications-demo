@@ -1,20 +1,23 @@
 import clsx from 'clsx'
-import { Cross2Icon } from '@radix-ui/react-icons'
+import {
+  CheckCircledIcon,
+  Cross2Icon,
+  ExclamationTriangleIcon,
+  InfoCircledIcon,
+} from '@radix-ui/react-icons'
 import { ReactNode } from 'react'
 import { motion, useIsPresent, type Variants } from 'framer-motion'
 import { useTimeoutFn, useUpdateEffect } from 'react-use'
 
-import { dismissNotification } from '@features/notifications/notification.slice'
+import {
+  dismissNotification,
+  NotificationPositions,
+  useNotificationDuration,
+  useNotificationPosition,
+} from '@features/notifications/notification.slice'
 import { useAppDispatch } from '@redux/hooks'
 
 export type NotificationTypes = 'success' | 'error' | 'warning' | 'info'
-export type NotificationPositions =
-  | 'top'
-  | 'top-right'
-  | 'top-left'
-  | 'bottom'
-  | 'bottom-right'
-  | 'bottom-left'
 
 export type Notification = {
   /**
@@ -54,10 +57,30 @@ type Props = {
   notification: Notification
 }
 
+const getMotionDirectionAndPosition = (
+  position: NotificationPositions,
+  duration = 24
+) => {
+  const directionPositions: NotificationPositions[] = ['top', 'bottom']
+  const factorPositions: NotificationPositions[] = ['top-right', 'bottom-right']
+
+  const direction = directionPositions.includes(position) ? 'y' : 'x'
+  let factor = factorPositions.includes(position) ? 1 : -1
+  if (position === 'bottom') factor = 1
+
+  return {
+    [direction]: factor * duration,
+  }
+}
+
 const motionVariants: Variants = {
-  initial: {
-    opacity: 0,
-    x: 24,
+  initial: (position: NotificationPositions) => {
+    const directionAndPosition = getMotionDirectionAndPosition(position)
+
+    return {
+      opacity: 0,
+      ...directionAndPosition,
+    }
   },
   animate: {
     opacity: 1,
@@ -69,13 +92,17 @@ const motionVariants: Variants = {
       ease: [0.4, 0, 0.2, 1],
     },
   },
-  exit: {
-    opacity: 0,
-    x: 30,
-    transition: {
-      duration: 0.2,
-      ease: [0.4, 0, 1, 1],
-    },
+  exit: (position) => {
+    const directionAndPosition = getMotionDirectionAndPosition(position, 30)
+
+    return {
+      opacity: 0,
+      ...directionAndPosition,
+      transition: {
+        duration: 0.2,
+        ease: [0.4, 0, 1, 1],
+      },
+    }
   },
 }
 
@@ -89,6 +116,16 @@ const notificationStyleVariants: Record<
   warning: 'bg-yellow-3 border-yellow-6',
 }
 
+const notificationIcons: Record<
+  NonNullable<Notification['type']>,
+  ReactNode
+> = {
+  success: <CheckCircledIcon />,
+  error: <ExclamationTriangleIcon />,
+  info: <InfoCircledIcon />,
+  warning: <ExclamationTriangleIcon />,
+}
+
 const closeButtonStyleVariants: Record<
   NonNullable<Notification['type']>,
   string
@@ -100,16 +137,12 @@ const closeButtonStyleVariants: Record<
 }
 
 export const NotificationItem = ({
-  notification: {
-    id,
-    autoHideDuration = 6000,
-    message,
-    onClose,
-    type = 'info',
-  },
+  notification: { id, autoHideDuration, message, onClose, type = 'info' },
 }: Props) => {
   const dispatch = useAppDispatch()
+  const duration = useNotificationDuration()
   const isPresent = useIsPresent()
+  const position = useNotificationPosition()
 
   // Handle dismiss of a single notification
   const handleDismiss = () => {
@@ -119,7 +152,10 @@ export const NotificationItem = ({
   }
 
   // Call the dismiss function after a certain timeout
-  const [, cancel, reset] = useTimeoutFn(handleDismiss, autoHideDuration)
+  const [, cancel, reset] = useTimeoutFn(
+    handleDismiss,
+    autoHideDuration ?? duration
+  )
 
   // Reset or cancel dismiss timeout based on mouse interactions
   const onMouseEnter = () => cancel()
@@ -135,18 +171,22 @@ export const NotificationItem = ({
   return (
     <motion.li
       className={clsx(
-        'flex w-max items-center shadow px-4 py-3 rounded border transition-colors duration-100 min-w-[260px] text-sm',
+        'flex w-max items-center shadow px-4 py-3 rounded border transition-colors duration-100 min-w-[260px] text-sm pointer-events-auto',
         notificationStyleVariants[type]
       )}
       initial="initial"
       animate="animate"
       exit="exit"
       layout="position"
+      custom={position}
       variants={motionVariants}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <span className="max-w-sm font-medium">{message}</span>
+      <div className="flex gap-2 items-center">
+        {notificationIcons[type]}
+        <span className="max-w-sm font-medium">{message}</span>
+      </div>
 
       <div className="pl-4 ml-auto">
         <button
