@@ -7,7 +7,7 @@ import {
 } from '@radix-ui/react-icons'
 import { ReactNode } from 'react'
 import { motion, useIsPresent, type Variants } from 'framer-motion'
-import { useTimeoutFn, useUpdateEffect } from 'react-use'
+import { useMedia, useTimeoutFn, useUpdateEffect } from 'react-use'
 
 import {
   dismissNotification,
@@ -16,6 +16,7 @@ import {
   useNotificationPosition,
 } from '@features/notifications/notification.slice'
 import { useAppDispatch } from '@redux/hooks'
+import { usePrefersReducedMotion } from '@app/core/hooks/usePrefersReducedMotion'
 
 export type NotificationTypes = 'success' | 'error' | 'warning' | 'info'
 
@@ -143,6 +144,7 @@ export const NotificationItem = ({
   const duration = useNotificationDuration()
   const isPresent = useIsPresent()
   const position = useNotificationPosition()
+  const prefersReducedMotion = usePrefersReducedMotion()
 
   // Handle dismiss of a single notification
   const handleDismiss = () => {
@@ -179,7 +181,7 @@ export const NotificationItem = ({
       exit="exit"
       layout="position"
       custom={position}
-      variants={motionVariants}
+      variants={!prefersReducedMotion ? motionVariants : {}}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >

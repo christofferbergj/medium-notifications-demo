@@ -15,6 +15,7 @@ import { useAppDispatch } from '@redux/hooks'
 
 import { Button, type ButtonTypes } from '@app/core/components/elements/Button'
 import { useDebounce } from 'react-use'
+import { usePrefersReducedMotion } from '@app/core/hooks/usePrefersReducedMotion'
 
 const buttons: {
   button: Partial<ButtonTypes>
@@ -50,6 +51,7 @@ const Home: NextPage = () => {
   const [duration, setDuration] = useState<number>(6000)
   const dispatch = useAppDispatch()
   const position = useNotificationPosition()
+  const prefersReducedMotion = usePrefersReducedMotion()
 
   // Commit duration to Notification Redux slice debounced 300ms
   useDebounce(() => dispatch(setNotificationDuration(duration)), 300, [
@@ -58,8 +60,9 @@ const Home: NextPage = () => {
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen">
-      <div>
+      <div className="text-center">
         <h1 className="text-2xl text-3xl font-bold">Notifications demo</h1>
+        <span>Prefers reduced motion: {`${prefersReducedMotion}`} </span>
       </div>
 
       <div className="flex flex-col items-center mt-10 w-full lg:mt-28">
