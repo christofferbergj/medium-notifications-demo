@@ -60,7 +60,7 @@ const Home: NextPage = () => {
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen">
-      <div className="text-center">
+      <div className="flex flex-col gap-2 text-center">
         <h1 className="text-2xl text-3xl font-bold">Notifications demo</h1>
         <span>Prefers reduced motion: {`${prefersReducedMotion}`} </span>
       </div>
