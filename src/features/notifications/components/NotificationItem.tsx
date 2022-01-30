@@ -1,13 +1,14 @@
 import clsx from 'clsx'
+import { ReactNode } from 'react'
+import { motion, useIsPresent, type Variants } from 'framer-motion'
+import { useTimeoutFn, useUpdateEffect } from 'react-use'
+
 import {
   CheckCircledIcon,
   Cross2Icon,
   ExclamationTriangleIcon,
   InfoCircledIcon,
 } from '@radix-ui/react-icons'
-import { ReactNode } from 'react'
-import { motion, useIsPresent, type Variants } from 'framer-motion'
-import { useMedia, useTimeoutFn, useUpdateEffect } from 'react-use'
 
 import {
   dismissNotification,
@@ -58,29 +59,35 @@ type Props = {
   notification: Notification
 }
 
+/**
+ * To handle different positions of the notification, we need to change the
+ * animation direction based on whether it is rendered in the top/bottom or left/right.
+ *
+ * @param position - The position of the Notification
+ * @param fromEdge - The length of the position from the edge in pixels
+ */
 const getMotionDirectionAndPosition = (
   position: NotificationPositions,
-  duration = 24
+  fromEdge = 24
 ) => {
   const directionPositions: NotificationPositions[] = ['top', 'bottom']
   const factorPositions: NotificationPositions[] = ['top-right', 'bottom-right']
 
   const direction = directionPositions.includes(position) ? 'y' : 'x'
   let factor = factorPositions.includes(position) ? 1 : -1
+
   if (position === 'bottom') factor = 1
 
   return {
-    [direction]: factor * duration,
+    [direction]: factor * fromEdge,
   }
 }
 
 const motionVariants: Variants = {
   initial: (position: NotificationPositions) => {
-    const directionAndPosition = getMotionDirectionAndPosition(position)
-
     return {
       opacity: 0,
-      ...directionAndPosition,
+      ...getMotionDirectionAndPosition(position),
     }
   },
   animate: {
@@ -94,11 +101,9 @@ const motionVariants: Variants = {
     },
   },
   exit: (position) => {
-    const directionAndPosition = getMotionDirectionAndPosition(position, 30)
-
     return {
       opacity: 0,
-      ...directionAndPosition,
+      ...getMotionDirectionAndPosition(position, 30),
       transition: {
         duration: 0.2,
         ease: [0.4, 0, 1, 1],

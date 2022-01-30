@@ -102,23 +102,27 @@ const Home: NextPage = () => {
         </Slider.Root>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 mt-16 md:grid-cols-4 md:gap-4 lg:flex-row lg:mt-32">
-        {buttons.map(({ button, notification }, i) => (
-          <Button
-            key={i}
-            variant={button}
-            onClick={() =>
-              dispatch(
-                addNotification({
-                  message: `Hello from ${notification} notification!`,
-                  type: notification,
-                })
-              )
-            }
-          >
-            {capitalize(notification)}
-          </Button>
-        ))}
+      <div className="flex flex-col items-center mt-10 w-full lg:mt-28">
+        <span>Create notification</span>
+
+        <div className="grid grid-cols-2 gap-3 mt-6 md:grid-cols-4 md:gap-4 lg:flex-row">
+          {buttons.map(({ button, notification }, i) => (
+            <Button
+              key={i}
+              variant={button}
+              onClick={() =>
+                dispatch(
+                  addNotification({
+                    message: `Hello from ${notification} notification!`,
+                    type: notification,
+                  })
+                )
+              }
+            >
+              {capitalize(notification)}
+            </Button>
+          ))}
+        </div>
       </div>
     </div>
   )
