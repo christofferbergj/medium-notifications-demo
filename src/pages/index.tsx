@@ -1,21 +1,21 @@
 import * as Slider from '@radix-ui/react-slider'
 import capitalize from 'lodash/capitalize'
 import type { NextPage } from 'next'
+import { useDebounce } from 'react-use'
 import { useState } from 'react'
 
 import type { NotificationPositions } from '@features/notifications/notification.slice'
 import type { NotificationTypes } from '@features/notifications/components/NotificationItem'
+import { useAppDispatch } from '@redux/hooks'
+import { usePrefersReducedMotion } from '@app/core/hooks/usePrefersReducedMotion'
 import {
   addNotification,
   setNotificationDuration,
   setNotificationPosition,
   useNotificationPosition,
 } from '@features/notifications/notification.slice'
-import { useAppDispatch } from '@redux/hooks'
 
 import { Button, type ButtonTypes } from '@app/core/components/elements/Button'
-import { useDebounce } from 'react-use'
-import { usePrefersReducedMotion } from '@app/core/hooks/usePrefersReducedMotion'
 
 const buttons: {
   button: Partial<ButtonTypes>
